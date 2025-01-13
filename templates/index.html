@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD App with CSV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Items</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Brand</th>
+            <th>Model</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.price | format_number }}</td>
+            <td>
+                <form action="{{ url_for('delete', id=item.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus item ini?')">Delete</button>
+                </form>                
+                <a href="{{ url_for('update', id=item.id) }}">Update</a>
+            </td>
+        </tr>
+        
+        {% endfor %}
+    </table>
+    <form action="/add" method="POST">
+        <input type="text" name="name" placeholder="Brand" required>
+        <input type="text" name="description" placeholder="Model" required>
+        <input type="number" name="price" placeholder="Price" step="0.01" required>
+        <button type="submit">Add</button>
+    </form>
+    
+    <form action="/import" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Import CSV</button>
+    </form>
+</body>
+</html>
